@@ -36,15 +36,16 @@ explodeSoundPlayed = false;
 distanceY = y - O_Player.y - 48;
 distanceX = abs(x - (O_Player.x + 16));
 
-/*********** Fixed amount of time *****************
+/*********** Fixed amount of time *****************/
 timeCannon = 20; // Fixed amount of time
 
 // Find speeds in x and y
 xSpeed = distanceX/timeCannon;
 ySpeed = -(distanceY/timeCannon)-.5*cannonGrav*timeCannon;
-**************************************************/
+/**************************************************/
 
-/*********** Fixed xSpeed *************************/
+/*********** Fixed xSpeed *************************
+
 xSpeed = 10; // Fixed xSpeed
 timeCannon = distanceX / xSpeed; // Calculate the time to reach x position
 ySpeed = -(distanceY / timeCannon) - .5 * cannonGrav * timeCannon; // Calculate the initial velocity in y
@@ -73,12 +74,32 @@ ySpeed = -(distanceY / timeCannon) - .5 * cannonGrav * timeCannon; // Calculate 
             <kind>1</kind>
             <string>/// PATH 
 
-// We update position by speed
+//vertical
+if(place_meeting(x,y+ySpeed,O_Ground))
+{
+       while(!place_meeting(x,y+sign(ySpeed),O_Ground))
+        {
+            y += sign(ySpeed);
+        }
+}
+//horizontal
+ if(place_meeting(x + xSpeed, y,O_Ground))
+    {
+        while(!place_meeting(x+sign(xSpeed),y,O_Ground))
+        {
+            x += sign(xSpeed);
+            
+        }
+       
+    }
+    
+    // We update position by speed
 x+=xSpeed;
 y+=ySpeed;
 
 // Update the y speed to account for gravity
 ySpeed += cannonGrav;
+
 </string>
           </argument>
         </arguments>
@@ -108,7 +129,7 @@ xSpeed = 0;
 ySpeed = 0;
 
 // Play the animation to destroy bomb 
-image_speed = .25;
+image_speed = 1;
 
 // Only play sound if it hasn't already played
 if(explodeSoundPlayed == false){ 

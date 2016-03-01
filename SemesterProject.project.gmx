@@ -69,6 +69,7 @@
     <object>objects\O_CannonBomb</object>
   </objects>
   <rooms name="rooms">
+    <room>rooms\LevelTest</room>
     <room>rooms\room0_new</room>
     <room>rooms\room0</room>
   </rooms>

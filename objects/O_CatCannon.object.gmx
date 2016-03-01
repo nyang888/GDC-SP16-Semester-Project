@@ -34,6 +34,8 @@ left = -1;
 right = 1;
 facing = left;
 originalX = x;
+minDistance=10;
+maxDistance=400;
 
 // Charging code
 charge_time = 0 + irandom(50);
@@ -51,6 +53,8 @@ flash_Max = 2;
 while (!place_meeting(x, y + 1, O_Ground)) {
     y += 1;
 }
+
+
 </string>
           </argument>
         </arguments>
@@ -140,25 +144,33 @@ if (hp == 0) {
 
 // Figure out which direction to face
 xDistance = x - O_Player.x;
-if(xDistance + sprite_width &gt; 0){ // If player is inside enemy, don't swap
-    facing = left;
-    image_xscale = 1; // Normal image
-    x = originalX;
-}
-if(xDistance + sprite_width &lt; 0){ // If player is inside enemy, don't swap
-    facing = right;
-    image_xscale = -1; // Flip Image
-    x = originalX - sprite_width; // Deal with image flip offset
-}
 
+    if(xDistance + sprite_width &gt; 0){ // If player is inside enemy, don't swap
+        facing = left;
+        image_xscale = 1; // Normal image
+        x = originalX;
+    }
+    if(xDistance + sprite_width &lt; 0){ // If player is inside enemy, don't swap
+        facing = right;
+        image_xscale = -1; // Flip Image
+        x = originalX - sprite_width; // Deal with image flip offset
+   
+}
 // Code to determine when and how to attack
 if (phase == charge) // While charging
 {
+    if(abs(xDistance)&gt;minDistance and abs(xDistance)&lt;maxDistance)
+    { 
     charge_time += 1;
     if (charge_time == charge_time_max) // If it's done charging, attack
     {
         charge_time = 0;
         phase = attack;
+    }
+    }
+    else
+    {
+        charge_time=0;
     }
 }
 
