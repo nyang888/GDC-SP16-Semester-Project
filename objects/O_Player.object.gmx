@@ -38,6 +38,10 @@ fire_delay=0;
 fire_delay_max=4;
 //gives the bullet this speed
 shot_speed=16;
+//limit duration of firing (overheat gun)
+overheat_max = 10;
+overheat_increment = .5;
+overheat = 1; //start at 1, overheat as multiplier to angle
 
 //keeping track of direction
 facing=1;
@@ -67,97 +71,52 @@ right=1;
           <argument>
             <kind>1</kind>
             <string>///CONTROLS
+//moving left and right
+if (keyboard_check(vk_left)) {
+    facing = left;
+    xSpeed = -ms;
+    sprite_index = S_DogRun_L;
 
-    //moving left and right
-    if(keyboard_check(vk_left))
-    {
-        facing=left;
-        xSpeed=-ms;
-        sprite_index=S_DogRun_L;
-     
-        
+
+}
+if (keyboard_check_released(vk_left)) {
+
+    xSpeed = 0;
+    sprite_index = S_DogStand_L;
+
+}
+if (keyboard_check(vk_right)) {
+    facing = right;
+    xSpeed = ms;
+    sprite_index = S_DogRun_R;
+
+}
+if (keyboard_check_released(vk_right)) {
+    xSpeed = 0;
+    sprite_index = S_DogStand_R;
+}
+
+//JUMPING
+//initial speed
+if (keyboard_check_pressed(ord('X'))) {
+    if (grounded == true) {
+        audio_play_sound(choose(M_Jump1, M_Jump2), 0, false);
+        ySpeed = -8;
+        jump_timer = jump_max;
     }
-    if(keyboard_check_released(vk_left))
-    {
-     
-           xSpeed=0;
-           sprite_index=S_DogStand_L;
-        
+}
+//If you hold x you go higher
+if (keyboard_check(ord('X')) and grounded == false) {
+    if (jump_timer &gt; 0) {
+        jump_timer -= 1;
+        ySpeed -= 1;
     }
-    if(keyboard_check(vk_right))
-    {
-        facing=right;
-        xSpeed=ms;
-        sprite_index=S_DogRun_R;
-        
-    }
-    if(keyboard_check_released(vk_right))
-    {
-        xSpeed=0;
-        sprite_index=S_DogStand_R;
-    }
-    //JUMPING
-    
-    //initial speed
-    if(keyboard_check_pressed(ord('X')))
-    {
-        if(grounded==true)
-        {
-            audio_play_sound(choose(M_Jump1,M_Jump2),0,false);
-            ySpeed=-8;
-            jump_timer=jump_max;
-        }
-    }
-    //If you hold x you go higher
-    if(keyboard_check(ord('X')) and grounded==false)
-    {
-        if(jump_timer&gt;0)
-        {
-            jump_timer-=1;
-            ySpeed-=1;
-        }
-    }
-    //Release x, stop going higher
-    if(keyboard_check_released(ord('X')))
-    {
-        jump_timer=0;
-    }
-    //Shooting   
-    
-    if(keyboard_check(ord('C')))
-    {
-        //When the timer is 0, create bullet
-        if(fire_delay==0)
-        {
-            audio_play_sound(M_Shoot,0,false);
-           if(facing==right)
-           {
-              var Bullet= instance_create(x+sprite_width,y+sprite_height/2,O_Bullet);
-                Bullet.xSpeed=shot_speed;
-                //create the shell and give it horizontal speed
-              var Shell=instance_create(x,y+25,O_Shell);
-                Shell.xSpeed=-8;
-                
-           }
-           if(facing==left)
-           {
-                var Bullet= instance_create(x,y+sprite_height/2,O_Bullet);
-                Bullet.xSpeed=-shot_speed;
-                     //create the shell and give it horizontal speed
-                   var Shell=instance_create(x+sprite_width,y+25,O_Shell);
-                Shell.xSpeed=8;
-           }
-           fire_delay=fire_delay_max;
-        }    
-        //While you're holding c, decrement timer
-        fire_delay-=1;
-    }
-    
-    // When C is released, the timer is set back to 0
-    if(keyboard_check_released(ord('C')))
-    {
-        fire_delay=0;
-    }
+}
+//Release x, stop going higher
+if (keyboard_check_released(ord('X'))) {
+    jump_timer = 0;
+}
+
 
 </string>
           </argument>
@@ -266,6 +225,64 @@ if(facing==left)
     {
         sprite_index=S_Jump_L;
     }
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>/// SHOOTING
+if (keyboard_check(ord('C'))) {
+    //When the timer is 0, create bullet
+    //Only create a bullet when the gun is not overheated
+    if (fire_delay == 0 &amp;&amp; overheat &lt; overheat_max) {
+        audio_play_sound(M_Shoot, 0, false);
+        if (facing == right) {
+            var Bullet = instance_create(x + sprite_width, y + sprite_height / 2, O_Bullet);
+            Bullet.xSpeed = shot_speed;
+            //create the shell and give it horizontal speed
+            var Shell = instance_create(x, y + 25, O_Shell);
+            Shell.xSpeed = -8;
+
+        }
+        if (facing == left) {
+            var Bullet = instance_create(x, y + sprite_height / 2, O_Bullet);
+            Bullet.xSpeed = -shot_speed;
+            //create the shell and give it horizontal speed
+            var Shell = instance_create(x + sprite_width, y + 25, O_Shell);
+            Shell.xSpeed = 8;
+        }
+        fire_delay = fire_delay_max;
+        
+        // Upon creating a bullet, increment the overheat timer
+        overheat += overheat_increment;
+    }
+    //While you're holding c, decrement timer
+    fire_delay -= 1;
+} else {
+    if( overheat &gt;= 0 ){
+        overheat -= overheat_increment;
+    }
+}
+
+// When C is released, the timer is set back to 0
+if (keyboard_check_released(ord('C'))) {
+    fire_delay = 0;
 }
 </string>
           </argument>
