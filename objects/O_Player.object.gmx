@@ -47,6 +47,7 @@ overheat = 1; //start at 1, overheat as multiplier to angle
 facing=1;
 left=0;
 right=1;
+facing_up = 0; // flag for O_Bullet to read
 
 </string>
           </argument>
@@ -247,42 +248,86 @@ if(facing==left)
           <argument>
             <kind>1</kind>
             <string>/// SHOOTING
-if (keyboard_check(ord('C'))) {
-    //When the timer is 0, create bullet
-    //Only create a bullet when the gun is not overheated
-    if (fire_delay == 0 &amp;&amp; overheat &lt; overheat_max) {
-        audio_play_sound(M_Shoot, 0, false);
-        if (facing == right) {
-            var Bullet = instance_create(x + sprite_width, y + sprite_height / 2, O_Bullet);
-            Bullet.xSpeed = shot_speed;
-            //create the shell and give it horizontal speed
-            var Shell = instance_create(x, y + 25, O_Shell);
-            Shell.xSpeed = -8;
+// For upwards shots
+if (keyboard_check(vk_up)) {
+    facing_up = 1; // set flag for O_Bullet to read
+    if (keyboard_check(ord('C'))) {
+        //When the timer is 0, create bullet
+        //Only create a bullet when the gun is not overheated
+        if (fire_delay == 0 &amp;&amp; overheat &lt; overheat_max) {
+            audio_play_sound(M_Shoot, 0, false);
 
-        }
-        if (facing == left) {
-            var Bullet = instance_create(x, y + sprite_height / 2, O_Bullet);
-            Bullet.xSpeed = -shot_speed;
-            //create the shell and give it horizontal speed
-            var Shell = instance_create(x + sprite_width, y + 25, O_Shell);
-            Shell.xSpeed = 8;
-        }
-        fire_delay = fire_delay_max;
-        
-        // Upon creating a bullet, increment the overheat timer
-        overheat += overheat_increment;
-    }
-    //While you're holding c, decrement timer
-    fire_delay -= 1;
-} else {
-    if( overheat &gt;= 0 ){
-        overheat -= overheat_increment;
-    }
-}
+            // Only diff in left/right is where shell and bullet spawn
+            if (facing == right) {
+                var Bullet = instance_create(x + sprite_width, y + sprite_height / 2, O_Bullet);
+                Bullet.ySpeed = -shot_speed;
+                //create the shell and give it horizontal speed
+                var Shell = instance_create(x, y + 25, O_Shell);
+                Shell.ySpeed = 8;
+            }
+            if (facing == left) {
+                var Bullet = instance_create(x, y + sprite_height / 2, O_Bullet);
+                Bullet.ySpeed = -shot_speed;
+                //create the shell and give it horizontal speed
+                var Shell = instance_create(x + sprite_width, y + 25, O_Shell);
+                Shell.ySpeed = 8;
+            }
 
-// When C is released, the timer is set back to 0
-if (keyboard_check_released(ord('C'))) {
-    fire_delay = 0;
+            fire_delay = fire_delay_max;
+
+            // Upon creating a bullet, increment the overheat timer
+            overheat += overheat_increment;
+        }
+        //While you're holding c, decrement timer
+        fire_delay -= 1;
+    } else {
+        if (overheat &gt;= 0) {
+            overheat -= overheat_increment;
+        }
+    }
+
+    // When C is released, the timer is set back to 0
+    if (keyboard_check_released(ord('C'))) {
+        fire_delay = 0;
+    }
+} else { // for sideways shots
+    facing_up = 0; // set flag for O_Bullet to read
+    if (keyboard_check(ord('C'))) {
+        //When the timer is 0, create bullet
+        //Only create a bullet when the gun is not overheated
+        if (fire_delay == 0 &amp;&amp; overheat &lt; overheat_max) {
+            audio_play_sound(M_Shoot, 0, false);
+            if (facing == right) {
+                var Bullet = instance_create(x + sprite_width, y + sprite_height / 2, O_Bullet);
+                Bullet.xSpeed = shot_speed;
+                //create the shell and give it horizontal speed
+                var Shell = instance_create(x, y + 25, O_Shell);
+                Shell.xSpeed = -8;
+            }
+            if (facing == left) {
+                var Bullet = instance_create(x, y + sprite_height / 2, O_Bullet);
+                Bullet.xSpeed = -shot_speed;
+                //create the shell and give it horizontal speed
+                var Shell = instance_create(x + sprite_width, y + 25, O_Shell);
+                Shell.xSpeed = 8;
+            }
+            fire_delay = fire_delay_max;
+
+            // Upon creating a bullet, increment the overheat timer
+            overheat += overheat_increment;
+        }
+        //While you're holding c, decrement timer
+        fire_delay -= 1;
+    } else {
+        if (overheat &gt;= 0) {
+            overheat -= overheat_increment;
+        }
+    }
+
+    // When C is released, the timer is set back to 0
+    if (keyboard_check_released(ord('C'))) {
+        fire_delay = 0;
+    }
 }
 </string>
           </argument>

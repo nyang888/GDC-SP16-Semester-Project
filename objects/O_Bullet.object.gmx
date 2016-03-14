@@ -25,13 +25,24 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>xSpeed=1;
-instance_create(x,y,O_Shake_Small);
-//gives the bullet a varience in angle
-ySpeed=O_Player.overheat * irandom_range(-10,10)/10;
+            <string>// For normal left/right bullets
+if (O_Player.facing_up == 0) {
+    xSpeed = 1;
+    instance_create(x, y, O_Shake_Small);
+    //gives the bullet a varience in angle
+    ySpeed = O_Player.overheat * irandom_range(-10, 10) / 10;
 
-//sets angle of bullet image
-image_angle=-arctan(ySpeed/xSpeed);
+    //sets angle of bullet image
+    image_angle = -arctan(ySpeed / xSpeed);
+} else if (O_Player.facing_up == 1) { // for upwards bullets
+    ySpeed = -1;
+    instance_create(x, y, O_Shake_Small);
+    //gives the bullet a varience in angle
+    xSpeed = O_Player.overheat * irandom_range(-10, 10) / 10;
+
+    //sets angle of bullet image
+    image_angle = arctan(xSpeed / ySpeed) + 90; // 90 to rotate upwards
+}
 </string>
           </argument>
         </arguments>
