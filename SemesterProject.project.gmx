@@ -68,6 +68,7 @@
     <object>objects\O_Bullet_Explode</object>
     <object>objects\O_CannonBomb</object>
     <object>objects\O_CatBoss</object>
+    <object>objects\O_CatBoss_Beam</object>
     <object>objects\O_CatCannon</object>
     <object>objects\O_Death_Particle</object>
     <object>objects\O_Explosion</object>
@@ -82,7 +83,6 @@
     <object>objects\O_Shake_Big</object>
     <object>objects\O_Shake_Small</object>
     <object>objects\O_Shell</object>
-    <object>objects\O_CatBoss_Beam</object>
   </objects>
   <rooms name="rooms">
     <room>rooms\Level1</room>

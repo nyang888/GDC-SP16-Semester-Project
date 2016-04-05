@@ -31,7 +31,7 @@ hp = 50;
 charge_time = 0 + irandom(10);
 charge_time_max = 50;
 transition_time = 0;
-transition_time_max = 5;
+transition_time_max = 10;
 attack_time = 0;
 attack_time_max = 20;
 phase = 2;
@@ -108,7 +108,7 @@ if (phase == attack) {
     
     attack_time += 1;
         var Beam;
-        Beam = instance_create(x, y + sprite_height * 2 / 5, O_CatBoss_Beam);
+        Beam = instance_create(x + 34, y + 50, O_CatBoss_Beam);
         
         instance_create(x, y, O_Shake_Small);
         
