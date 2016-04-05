@@ -17,13 +17,6 @@
     <sound>sound\M_Minigun_Set</sound>
   </sounds>
   <sprites name="sprites">
-    <sprite>sprites\S_Ground</sprite>
-    <sprite>sprites\S_Bullet</sprite>
-    <sprite>sprites\S_Bullet_Explode</sprite>
-    <sprite>sprites\S_Bullet_Big</sprite>
-    <sprite>sprites\S_Robot</sprite>
-    <sprite>sprites\S_Robot_Explode</sprite>
-    <sprite>sprites\S_Shell</sprite>
     <sprites name="Dog">
       <sprite>sprites\S_Jump_R</sprite>
       <sprite>sprites\S_Jump_L</sprite>
@@ -35,43 +28,65 @@
     <sprites name="Enemies">
       <sprites name="MiniGun">
         <sprite>sprites\S_Mini_Charge</sprite>
+        <sprite>sprites\S_Mini_Charge_R</sprite>
         <sprite>sprites\S_Mini_Attack</sprite>
+        <sprite>sprites\S_Mini_Attack_R</sprite>
         <sprite>sprites\S_Mini_Bullet</sprite>
+        <sprite>sprites\S_Mini_Bullet_R</sprite>
         <sprite>sprites\S_MiniGun</sprite>
       </sprites>
       <sprites name="CatCannon">
         <sprite>sprites\S_CatCannon</sprite>
-        <sprite>sprites\S_Cannon_Bomb</sprite>
+        <sprite>sprites\S_CatCannon_R</sprite>
+        <sprite>sprites\S_CannonBomb</sprite>
+      </sprites>
+      <sprites name="CatBoss">
+        <sprite>sprites\S_CatBoss_Blast</sprite>
+        <sprite>sprites\S_CatBoss_Idle</sprite>
+        <sprite>sprites\S_CatBoss_Transition</sprite>
+        <sprite>sprites\S_CatBoss_Blasting</sprite>
       </sprites>
     </sprites>
+    <sprite>sprites\S_Bullet</sprite>
+    <sprite>sprites\S_Bullet_Big</sprite>
+    <sprite>sprites\S_Bullet_Explode</sprite>
+    <sprite>sprites\S_Dog_Explode</sprite>
+    <sprite>sprites\S_Ground</sprite>
+    <sprite>sprites\S_Level_Control</sprite>
+    <sprite>sprites\S_Robot</sprite>
+    <sprite>sprites\S_Robot_Explode</sprite>
+    <sprite>sprites\S_Shell</sprite>
   </sprites>
   <backgrounds name="background">
     <background>background\Tileset</background>
   </backgrounds>
   <paths name="paths"/>
   <objects name="objects">
-    <object>objects\O_Player</object>
-    <object>objects\O_Ground</object>
-    <object>objects\O_Bullet</object>
-    <object>objects\O_Robot_Spawner</object>
-    <object>objects\O_Robot</object>
-    <object>objects\O_Explosion</object>
-    <object>objects\O_Shake_Small</object>
-    <object>objects\O_Shake_Big</object>
-    <object>objects\O_Shell</object>
-    <object>objects\O_Bullet_Explode</object>
-    <object>objects\O_Screen</object>
-    <object>objects\O_MiniGunCat</object>
-    <object>objects\O_Mini_Bullet</object>
     <object>objects\Enemy_Parent</object>
-    <object>objects\O_MiniGun</object>
-    <object>objects\O_CatCannon</object>
+    <object>objects\Level_Controller</object>
+    <object>objects\O_Bullet</object>
+    <object>objects\O_Bullet_Explode</object>
     <object>objects\O_CannonBomb</object>
+    <object>objects\O_CatBoss</object>
+    <object>objects\O_CatCannon</object>
+    <object>objects\O_Death_Particle</object>
+    <object>objects\O_Explosion</object>
+    <object>objects\O_Ground</object>
+    <object>objects\O_Mini_Bullet</object>
+    <object>objects\O_MiniGun</object>
+    <object>objects\O_MiniGunCat</object>
+    <object>objects\O_Player</object>
+    <object>objects\O_Robot</object>
+    <object>objects\O_Robot_Spawner</object>
+    <object>objects\O_Screen</object>
+    <object>objects\O_Shake_Big</object>
+    <object>objects\O_Shake_Small</object>
+    <object>objects\O_Shell</object>
+    <object>objects\O_CatBoss_Beam</object>
   </objects>
   <rooms name="rooms">
-    <room>rooms\LevelTest</room>
-    <room>rooms\room0_new</room>
-    <room>rooms\room0</room>
+    <room>rooms\Level1</room>
+    <room>rooms\Level2</room>
   </rooms>
   <help>
     <rtf>help.rtf</rtf>

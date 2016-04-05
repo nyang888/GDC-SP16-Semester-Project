@@ -34,7 +34,6 @@ attack_time_max=20;
 phase=2;
 attack=1;
 charge=2;
-originalX = x;
 
 left=-1;
 right=1;
@@ -73,59 +72,42 @@ while(!place_meeting(x,y+1,O_Ground))
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>// Figure out which direction to face
-xDistance = x - O_Player.x;
-if(xDistance + sprite_width &gt; 0){ // If player is inside enemy, don't swap
-    facing = left;
-    image_xscale = 1; // Normal image
-    x = originalX;
-}
-if(xDistance + sprite_width &lt; 0){ // If player is inside enemy, don't swap
-    facing = right;
-    image_xscale = -1; // Flip Image
-    x = originalX - sprite_width; // Deal with image flip offset
-}
-
-if(phase==charge)
-{  
-    image_speed=0;
-    sprite_index=S_Mini_Charge;
-    charge_time+=1;
-    if(charge_time==charge_time_max)
-    {
-        charge_time=0;
-        phase=attack;
+            <string>if (phase == charge) {
+    image_speed = 0;
+    sprite_index = S_Mini_Charge;
+    charge_time += 1;
+    if (charge_time == charge_time_max) {
+        charge_time = 0;
+        phase = attack;
     }
 }
 
-if(phase==attack)
-{
-    image_speed=.25;
-        if(sprite_index=S_Mini_Attack)
-        {
-            image_speed=1;
-            attack_time+=1;
-            if(floor(image_index)==0)
-            {
-            var Bullet;
-                if(facing == left) {
-                    Bullet= instance_create(x,y+sprite_height/2,O_Mini_Bullet);
-                } else if (facing == right) {
-                    Bullet= instance_create(x,y+sprite_height/2,O_Mini_Bullet);
-                }
-                
-                Bullet.xSpeed*=facing;
-                instance_create(x,y,O_Shake_Small);
+if (phase == attack) {
+    image_speed = .25;
+    if (sprite_index == S_Mini_Attack || sprite_index == S_Mini_Attack_R) {
+
+        image_speed = 1;
+        attack_time += 1;
+        var Bullet;
+        if (facing == left) {
+            if (floor(image_index) == 0) {
+                Bullet = instance_create(x, y + sprite_height / 2, O_Mini_Bullet);
+                Bullet.xSpeed *= facing;
+            }
+        } else {
+            if (floor(image_index) == 0) {
+                Bullet = instance_create(x + sprite_width, y + sprite_height / 2, O_Mini_Bullet);
+                Bullet.xSpeed *= facing;
             }
         }
-        if(attack_time==attack_time_max)
-{
-    attack_time=0;
-    phase=charge;
+        
+        instance_create(x, y, O_Shake_Small);
+    }
+    if (attack_time == attack_time_max) {
+        attack_time = 0;
+        phase = charge;
+    }
 }
-}
-
-
 </string>
           </argument>
         </arguments>
@@ -220,6 +202,50 @@ if(hp==0)
           </argument>
         </arguments>
       </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>/// FACING CONTROL
+
+if(x+sprite_width&gt;O_Player.x)
+{
+    facing=left;
+}
+else if (x+sprite_width&lt;O_Player.x)
+{
+    facing=right;
+} 
+
+if(facing == right) {
+    if( sprite_index == S_Mini_Charge ){
+        sprite_index = S_Mini_Charge_R;
+    } else if( sprite_index == S_Mini_Attack ) {
+        sprite_index = S_Mini_Attack_R;
+    }
+} else {
+    if( sprite_index == S_Mini_Charge_R ){
+        sprite_index = S_Mini_Charge;
+    } else if( sprite_index == S_Mini_Attack_R ) {
+        sprite_index = S_Mini_Attack;
+    }
+}
+</string>
+          </argument>
+        </arguments>
+      </action>
     </event>
     <event eventtype="4" ename="O_Bullet">
       <action>
@@ -266,7 +292,7 @@ is_flashed=true;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>if(sprite_index==S_Mini_Charge)
+            <string>if(sprite_index==S_Mini_Charge || sprite_index==S_Mini_Charge_R)
 {
     sprite_index=S_Mini_Attack;
 }

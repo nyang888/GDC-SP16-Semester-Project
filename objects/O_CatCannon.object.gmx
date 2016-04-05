@@ -25,35 +25,26 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>/// CREATE
+            <string>image_speed=0;
+hp=15;
+charge_time=0+irandom(10);
+charge_time_max=50;
+phase=2;
+attack=1;
+charge=2;
 
-// Cat Info
-image_speed = 0; // Default should be standing pose
-hp = 15;
-left = -1;
-right = 1;
-facing = left;
-originalX = x;
-minDistance=10;
-maxDistance=400;
+left=-1;
+right=1;
+facing=left;
 
-// Charging code
-charge_time = 0 + irandom(50);
-charge_time_max = 50;
-phase = 2;
-attack = 1;
-charge = 2;
+is_flashed=false;
+flash_timer=0;
+flash_Max=2;
 
-// Flashing code for when hit by bullet
-is_flashed = false;
-flash_timer = 0;
-flash_Max = 2;
-
-// Drop to ground
-while (!place_meeting(x, y + 1, O_Ground)) {
-    y += 1;
+while(!place_meeting(x,y+1,O_Ground))
+{
+    y+=1;
 }
-
 
 </string>
           </argument>
@@ -77,8 +68,55 @@ while (!place_meeting(x, y + 1, O_Ground)) {
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>/// FLASHING (hit by bullet)
-// Flashing code for when hit
+            <string>/// UPDATE &amp; ATTACK
+
+if(phase==charge)
+{  
+    image_speed=0;
+    charge_time+=1;
+    if(charge_time==charge_time_max)
+    {
+        charge_time=0;
+        phase=attack;
+    }
+}
+
+if(phase==attack)
+{
+    image_speed=.25;
+}
+
+if(x+sprite_width&gt;O_Player.x)
+{
+    facing=left;
+    sprite_index=S_CatCannon;
+}
+else if (x+sprite_width&lt;O_Player.x)
+{
+    facing=right;
+    sprite_index=S_CatCannon_R;
+}   
+</string>
+          </argument>
+        </arguments>
+      </action>
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>///flashed
 if(is_flashed=true)
 {
     flash_timer+=1;
@@ -112,13 +150,14 @@ if(is_flashed=true)
           <argument>
             <kind>1</kind>
             <string>///DEATH
-if (hp == 0) {
-    // Play death sound
-    audio_play_sound(M_Explode, 0, false);
-
-    // Make a death explosion
-    instance_create(x, y, O_Explosion);
-    instance_destroy(); // Kill the cat
+if(hp==0)
+{
+   audio_play_sound(M_Explode,0,false);
+     
+   instance_create(x,y,O_Explosion);
+    instance_destroy();
+ 
+    
 }
 </string>
           </argument>
@@ -140,107 +179,19 @@ if (hp == 0) {
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>/// UPDATE &amp; ATTACK
+            <string>/// SHOOT
 
-// Figure out which direction to face
-xDistance = x - O_Player.x;
-
-    if(xDistance + sprite_width &gt; 0){ // If player is inside enemy, don't swap
-        facing = left;
-        image_xscale = 1; // Normal image
-        x = originalX;
+// If the animation is at the shot (white flash index 3) then  create a bomb
+if (image_index == 3) {
+    if(facing == left) {
+        var bomb = instance_create(x,y + sprite_height/3, O_CannonBomb);
+        bomb.xSpeed *= facing;
+    } else {
+        var bomb = instance_create(x+sprite_width,y + sprite_height/3, O_CannonBomb);
+        bomb.xSpeed *= facing;
     }
-    if(xDistance + sprite_width &lt; 0){ // If player is inside enemy, don't swap
-        facing = right;
-        image_xscale = -1; // Flip Image
-        x = originalX - sprite_width; // Deal with image flip offset
-   
+    instance_create(x,y,O_Shake_Small);
 }
-// Code to determine when and how to attack
-if (phase == charge) // While charging
-{
-    if(abs(xDistance)&gt;minDistance and abs(xDistance)&lt;maxDistance)
-    { 
-    charge_time += 1;
-    if (charge_time == charge_time_max) // If it's done charging, attack
-    {
-        charge_time = 0;
-        phase = attack;
-    }
-    }
-    else
-    {
-        charge_time=0;
-    }
-}
-
-if (phase == attack) // Attack timing
-{
-    // Use the animation to determine attacking
-    image_speed = .5;
-}
-</string>
-          </argument>
-        </arguments>
-      </action>
-      <action>
-        <libid>1</libid>
-        <id>603</id>
-        <kind>7</kind>
-        <userelative>0</userelative>
-        <isquestion>0</isquestion>
-        <useapplyto>-1</useapplyto>
-        <exetype>2</exetype>
-        <functionname></functionname>
-        <codestring></codestring>
-        <whoName>self</whoName>
-        <relative>0</relative>
-        <isnot>0</isnot>
-        <arguments>
-          <argument>
-            <kind>1</kind>
-            <string>///SHOOT
-// Shoot a bomb and shake the screen
-// Different shooting place with facing location
-if(image_index==3)
-{
-    if (facing == left) {
-    var bomb = instance_create(x, y + sprite_height / 3, O_CannonBomb);
-    } else if (facing == right) {
-    var bomb = instance_create(x, y + sprite_height / 3, O_CannonBomb);
-    }
-    bomb.xSpeed *= facing; // Shoot the bomb in the direction you are facing
-    instance_create(x, y, O_Shake_Small);
-
-}
-</string>
-          </argument>
-        </arguments>
-      </action>
-    </event>
-    <event eventtype="4" ename="O_Bullet">
-      <action>
-        <libid>1</libid>
-        <id>603</id>
-        <kind>7</kind>
-        <userelative>0</userelative>
-        <isquestion>0</isquestion>
-        <useapplyto>-1</useapplyto>
-        <exetype>2</exetype>
-        <functionname></functionname>
-        <codestring></codestring>
-        <whoName>self</whoName>
-        <relative>0</relative>
-        <isnot>0</isnot>
-        <arguments>
-          <argument>
-            <kind>1</kind>
-            <string>/// HURT
-// When hit by bullet -1 health
-hp-=1;
-
-// Flash when hit
-is_flashed=true;
 </string>
           </argument>
         </arguments>
@@ -263,11 +214,10 @@ is_flashed=true;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>/// SET TO CHARGE
-    
-    // Set the cat to charge again 
-    phase = charge;
-    image_speed = 0;
+            <string>/// RESET
+
+phase = charge;
+image_speed = 0;
 </string>
           </argument>
         </arguments>

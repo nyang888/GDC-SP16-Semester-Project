@@ -25,10 +25,10 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>
-//sets the initial camera to just above the normal height
-view_yview=-room_height/4;
-target=0;
+            <string>/// INIT VARIABLE
+
+timer=60;
+
 </string>
           </argument>
         </arguments>
@@ -51,24 +51,20 @@ target=0;
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>//if the camera isnt on its target position, move at 1/10th the distance every frame
-//this gives a smooth transition, it eases into the correct position
+            <string>/// CONTROL OFF-SCREEN
 
-if(view_yview!=target)
+instance_deactivate_all(true);
+instance_activate_region(view_xview,view_yview,640,480,true);
+
+if(!instance_exists(O_Player))
 {
-
-view_yview-= (view_yview-target)/10;
+    timer-=1;
 }
 
-
-//once the camera is on the target, destroy the object so it doesn't mess 
-//with the screen shaking
-if(abs(view_yview-target)&lt;1)
+if(timer==0)
 {
-    view_yview=target;
-    instance_destroy();
+    room_restart();
 }
-    
 </string>
           </argument>
         </arguments>
